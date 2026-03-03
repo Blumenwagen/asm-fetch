@@ -14,7 +14,7 @@ This is a little project written in x86_64 assembly for fetching system informat
 
 ## Features
 
-- None. It can show data and thats it. I would not recommend trying to customize it.
+- None. It can show data and that's it. I would not recommend trying to customize it. Maybe don't even use it actually.
 
 ## Build Instructions
 
