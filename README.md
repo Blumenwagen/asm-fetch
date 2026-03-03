@@ -12,6 +12,8 @@
 
 This is a little project written in x86_64 assembly for fetching system information. Why? Because I was bored and now I hate myself.
 
+**besides all my problems, it turned out that writing something in assembly, makes it really really fast. Probably one of the fastest fetch programs out there... maybe... idk**
+
 ## Features
 
 - None. It can show data and that's it. I would not recommend trying to customize it. Maybe don't even use it actually.
