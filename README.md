@@ -20,6 +20,8 @@ This is a little project written in x86_64 assembly for fetching system informat
 
 ## Build Instructions
 
+There is a prebuilt binary in the repo if you dont want to build it yourself.
+
 To build `asm-fetch`, you'll need the NASM Assembler and standard GNU Linker.
 Ensure `nasm` and `ld` (via `binutils`) are installed on your system.
 
