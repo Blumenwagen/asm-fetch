@@ -58,6 +58,11 @@ This is a little project written in x86_64 assembly for fetching system informat
 You'll need **NASM** and **ld** (via `binutils`).
 
 ```bash
+
+# After installing dependencies, clone the repo
+git clone https://github.com/blumenwagen/asm-fetch.git
+cd asm-fetch
+
 # Build (assemble + link + strip)
 make
 
