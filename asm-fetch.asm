@@ -16,44 +16,70 @@ SYS_SYSINFO equ 99
 SYS_EXIT    equ 60
 STDOUT      equ 1
 O_RDONLY    equ 0
+NUM_ARTS    equ 3
 
 ; ---------------------------------------------------------------------------
-;  Data Section — ASCII art + labels
-;  Each art column is exactly 16 visible chars, then the label follows.
+;  Data Section
 ; ---------------------------------------------------------------------------
 section .data
-    ; -- ANSI color codes --
-    ; Cyan bold = \e[36;1m   Blue bold = \e[34;1m   Magenta bold = \e[35;1m
-    ; Reset     = \e[0m
+    ; =====================================================================
+    ;  Art variants — each row is exactly 16 visible characters.
+    ;  Art and labels are separated so variants share the same label set.
+    ; =====================================================================
 
-    ;                     |---- 16 chars ---|
-    ; Row 0: header (art row 1)
-    ascii_0      db 10
-                 db 27, "[36;1m", "       /\       ", 27, "[35;1m", "asm-fetch:", 27, "[0m", 10, 0
+    ; -- Variant 0: Mountain (original) --
+    art0_0  db 10, 27, "[36;1m", "       /\       ", 0
+    art0_1  db     27, "[36;1m", "      /  \      ", 0
+    art0_2  db     27, "[36;1m", "     /\   \     ", 0
+    art0_3  db     27, "[36;1m", "    /  \   \    ", 0
+    art0_4  db     27, "[36;1m", "   /____\___\   ", 0
+    art0_5  db     27, "[36;1m", "                ", 0
+    art0_6  db     27, "[36;1m", "                ", 0
+    art0_7  db     27, "[36;1m", "                ", 0
+    art0_8  db     27, "[36;1m", "                ", 0
 
-    ; Row 1: Hostname (art row 2)
-    label_host   db 27, "[36;1m", "      /  \      ", 27, "[34;1m", "Host:    ", 27, "[0m", 0
+    ; -- Variant 1: Diamond --
+    art1_0  db 10, 27, "[36;1m", "      /\        ", 0
+    art1_1  db     27, "[36;1m", "     /  \       ", 0
+    art1_2  db     27, "[36;1m", "    /    \      ", 0
+    art1_3  db     27, "[36;1m", "    \    /      ", 0
+    art1_4  db     27, "[36;1m", "     \  /       ", 0
+    art1_5  db     27, "[36;1m", "      \/        ", 0
+    art1_6  db     27, "[36;1m", "                ", 0
+    art1_7  db     27, "[36;1m", "                ", 0
+    art1_8  db     27, "[36;1m", "                ", 0
 
-    ; Row 2: Distro (art row 3)
-    label_dist   db 27, "[36;1m", "     /\   \     ", 27, "[34;1m", "Distro:  ", 27, "[0m", 0
+    ; -- Variant 2: House --
+    art2_0  db 10, 27, "[36;1m", "       /\       ", 0
+    art2_1  db     27, "[36;1m", "      /  \      ", 0
+    art2_2  db     27, "[36;1m", "     /    \     ", 0
+    art2_3  db     27, "[36;1m", "    /______\    ", 0
+    art2_4  db     27, "[36;1m", "    |  __  |    ", 0
+    art2_5  db     27, "[36;1m", "    | |  | |    ", 0
+    art2_6  db     27, "[36;1m", "    |_|__|_|    ", 0
+    art2_7  db     27, "[36;1m", "                ", 0
+    art2_8  db     27, "[36;1m", "                ", 0
 
-    ; Row 3: CPU (art row 4)
-    label_cpu    db 27, "[36;1m", "    /  \   \    ", 27, "[34;1m", "CPU:     ", 27, "[0m", 0
+    ; -- Art pointer tables (9 pointers each) --
+    art_table_0: dq art0_0, art0_1, art0_2, art0_3, art0_4, art0_5, art0_6, art0_7, art0_8
+    art_table_1: dq art1_0, art1_1, art1_2, art1_3, art1_4, art1_5, art1_6, art1_7, art1_8
+    art_table_2: dq art2_0, art2_1, art2_2, art2_3, art2_4, art2_5, art2_6, art2_7, art2_8
 
-    ; Row 4: Kernel (art row 5 — base)
-    label_ker    db 27, "[36;1m", "   /____\___\   ", 27, "[34;1m", "Kernel:  ", 27, "[0m", 0
+    ; -- Master table: points to each variant's art table --
+    art_tables: dq art_table_0, art_table_1, art_table_2
 
-    ; Row 5: WM (no art)
-    label_wm     db 27, "[36;1m", "                ", 27, "[34;1m", "WM:      ", 27, "[0m", 0
-
-    ; Row 6: Shell (no art)
-    label_shell  db 27, "[36;1m", "                ", 27, "[34;1m", "Shell:   ", 27, "[0m", 0
-
-    ; Row 7: Uptime (no art)
-    label_upt    db 27, "[36;1m", "                ", 27, "[34;1m", "Uptime:  ", 27, "[0m", 0
-
-    ; Row 8: RAM (no art)
-    label_mem    db 27, "[36;1m", "                ", 27, "[34;1m", "RAM:     ", 27, "[0m", 0
+    ; =====================================================================
+    ;  Labels — shared across all variants
+    ; =====================================================================
+    lbl_header  db 27, "[35;1m", "asm-fetch:", 27, "[0m", 10, 0
+    lbl_host    db 27, "[34;1m", "Host:    ", 27, "[0m", 0
+    lbl_dist    db 27, "[34;1m", "Distro:  ", 27, "[0m", 0
+    lbl_cpu     db 27, "[34;1m", "CPU:     ", 27, "[0m", 0
+    lbl_ker     db 27, "[34;1m", "Kernel:  ", 27, "[0m", 0
+    lbl_wm      db 27, "[34;1m", "WM:      ", 27, "[0m", 0
+    lbl_shell   db 27, "[34;1m", "Shell:   ", 27, "[0m", 0
+    lbl_upt     db 27, "[34;1m", "Uptime:  ", 27, "[0m", 0
+    lbl_mem     db 27, "[34;1m", "RAM:     ", 27, "[0m", 0
 
     ; -- File paths --
     path_os      db "/proc/sys/kernel/osrelease", 0
@@ -73,7 +99,7 @@ section .data
     env_wm       db "XDG_CURRENT_DESKTOP=", 0
     env_shell    db "SHELL=", 0
 
-    ; -- For parsing PRETTY_NAME from os-release --
+    ; -- Parsing keys --
     pretty_key   db "PRETTY_NAME=", 0
 
 ; ---------------------------------------------------------------------------
@@ -93,15 +119,27 @@ section .text
     global _start
 
 _start:
-    ; Save stack pointer early (contains argc, argv, envp)
+    ; Save stack pointer (contains argc, argv, envp)
     mov [envp_ptr], rsp
 
-    ; ===== Row 0: Header ASCII art =====
-    mov rsi, ascii_0
+    ; ===== Pick random art variant using CPU timestamp =====
+    rdtsc                          ; eax = low 32 bits of timestamp
+    xor edx, edx
+    mov ecx, NUM_ARTS
+    div ecx                        ; edx = timestamp % NUM_ARTS
+    mov rax, [art_tables + rdx*8]  ; rax = pointer to selected art table
+    mov r15, rax                   ; r15 = selected art table (preserved)
+
+    ; ===== Row 0: Header =====
+    mov rsi, [r15]                 ; art[0] (includes leading newline)
+    call print_str
+    mov rsi, lbl_header
     call print_str
 
     ; ===== Row 1: Hostname =====
-    mov rsi, label_host
+    mov rsi, [r15 + 8]
+    call print_str
+    mov rsi, lbl_host
     call print_str
     mov rdi, path_host
     call read_proc_file
@@ -118,8 +156,10 @@ _start:
     call print_str
 
 .distro_start:
-    ; ===== Row 2: Distro (parse PRETTY_NAME from /etc/os-release) =====
-    mov rsi, label_dist
+    ; ===== Row 2: Distro =====
+    mov rsi, [r15 + 16]
+    call print_str
+    mov rsi, lbl_dist
     call print_str
     mov rdi, path_osrel
     call read_proc_file
@@ -161,7 +201,9 @@ _start:
     mov [rdi+40], ecx
     mov [rdi+44], edx
 
-    mov rsi, label_cpu
+    mov rsi, [r15 + 24]
+    call print_str
+    mov rsi, lbl_cpu
     call print_str
     mov rsi, cpu_brand
     call skip_spaces
@@ -171,7 +213,9 @@ _start:
 
 .kernel_start:
     ; ===== Row 4: Kernel Version =====
-    mov rsi, label_ker
+    mov rsi, [r15 + 32]
+    call print_str
+    mov rsi, lbl_ker
     call print_str
     mov rdi, path_os
     call read_proc_file
@@ -189,7 +233,9 @@ _start:
 
 .wm_start:
     ; ===== Row 5: WM / Desktop =====
-    mov rsi, label_wm
+    mov rsi, [r15 + 40]
+    call print_str
+    mov rsi, lbl_wm
     call print_str
     mov rdi, env_wm
     call get_env
@@ -205,7 +251,9 @@ _start:
 
 .shell_start:
     ; ===== Row 6: Shell =====
-    mov rsi, label_shell
+    mov rsi, [r15 + 48]
+    call print_str
+    mov rsi, lbl_shell
     call print_str
     mov rdi, env_shell
     call get_env
@@ -220,15 +268,17 @@ _start:
     call print_str
 
 .uptime_start:
-    ; ===== Row 7: Uptime (parse /proc/uptime) =====
-    mov rsi, label_upt
+    ; ===== Row 7: Uptime =====
+    mov rsi, [r15 + 56]
+    call print_str
+    mov rsi, lbl_upt
     call print_str
     mov rdi, path_uptime
     call read_proc_file
     test rax, rax
     jle .upt_unknown
 
-    ; Parse integer part of uptime (seconds before the '.' or ' ')
+    ; Parse seconds from /proc/uptime (integer part before '.' or ' ')
     mov rsi, buffer
     xor rax, rax
     xor rcx, rcx
@@ -248,7 +298,7 @@ _start:
     jmp .parse_upt
 
 .upt_parsed:
-    ; rax = total seconds — convert to days, hours, minutes
+    ; Convert total seconds to days, hours, minutes
     xor rdx, rdx
     mov rbx, 86400
     div rbx
@@ -314,7 +364,9 @@ _start:
     call int_to_string
     push rsi
 
-    mov rsi, label_mem
+    mov rsi, [r15 + 64]
+    call print_str
+    mov rsi, lbl_mem
     call print_str
 
     pop rsi
@@ -325,7 +377,9 @@ _start:
     jmp .exit
 
 .ram_unknown:
-    mov rsi, label_mem
+    mov rsi, [r15 + 64]
+    call print_str
+    mov rsi, lbl_mem
     call print_str
     mov rsi, unknown_str
     call print_str
@@ -368,7 +422,6 @@ print_newline:
 ; print_until_newline: print chars at RSI until newline, null, or closing quote
 print_until_newline:
     push rsi
-    ; Skip leading double-quote if present
     cmp byte [rsi], '"'
     jne .no_lead_quote
     inc rsi
@@ -477,7 +530,6 @@ find_line_value:
     push rbx
     push r8
     push r9
-    ; Get needle length
     xor r8, r8
 .needle_len:
     cmp byte [rsi + r8], 0

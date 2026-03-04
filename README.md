@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="showcase.png" width="0" height="0"> <!-- preload -->
+  <img src="showcase.png" width="0" height="0">
   
   <h1>🚀 asm-fetch</h1>
   <p><b>A fetch tool written in x86_64 assembly :/</b></p>
@@ -19,9 +19,9 @@
 
 ## 📝 About
 
-This is a little project written in x86_64 assembly for fetching system information. Why? Because I was bored and now I hate myself.
+This is a little project written in x86_64 assembly for fetching system information. Why? Because I was bored and now I hate myself for even having the idea to write this. 
 
-**Besides all my problems, it turned out that writing something in assembly makes it really, really fast. Probably one of the fastest fetch programs out there... maybe... idk.**
+**Besides all my problems, it turned out that writing something in assembly makes it really, really fast. Probably one of the fastest fetch programs out there...**
 
 ```ansi
        /\       asm-fetch:
