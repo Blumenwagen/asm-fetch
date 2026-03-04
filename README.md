@@ -7,7 +7,7 @@
 
   <p>
     <img src="https://img.shields.io/badge/Language-Assembly-blue?style=for-the-badge&logo=nasm" alt="Language">
-    <img src="https://img.shields.io/badge/Features-Almost%20None-red?style=for-the-badge" alt="Features">
+    <img src="https://img.shields.io/badge/Features-Not%20Bad%20Actually-green?style=for-the-badge" alt="Features">
   </p>
 </div>
 
@@ -25,45 +25,61 @@ This is a little project written in x86_64 assembly for fetching system informat
 
 ```ansi
        /\       asm-fetch:
-      /  \      CPU:    Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
-     /\   \     Kernel: 6.19.5-3-cachyos
-    /  \   \    WM:     Hyprland
-   /____\___\   RAM:    7800 MB
+      /  \      Host:    archy
+     /\   \     Distro:  CachyOS
+    /  \   \    CPU:     AMD Ryzen 7 5800X 8-Core Processor
+   /____\___\   Kernel:  6.19.3-2-cachyos
+                WM:      Hyprland
+                Shell:   /bin/fish
+                Uptime:  3h 11m
+                RAM:     32012 MB
 ```
 
 ## 🧩 Features
 
-| Feature | Description |
-|---------|-------------|
-| 🚀 **Speed** | It's written in Assembly. It's actually not that slow. |
-| 🪹 **Features** | Almost None. It can show data and that's it. |
-| 🛠️ **Customizability** | I would not recommend trying to customize it. |
-| 🤔 **Usability** | Usable but not very customizable. |
+| Info | Source |
+|------|--------|
+| �️ **Hostname** | `/proc/sys/kernel/hostname` |
+| 🐧 **Distro** | `/etc/os-release` (`PRETTY_NAME`) |
+| ⚡ **CPU** | `CPUID` instruction (direct hardware query) |
+| � **Kernel** | `/proc/sys/kernel/osrelease` |
+| 🪟 **WM / Desktop** | `XDG_CURRENT_DESKTOP` env var |
+| � **Shell** | `SHELL` env var |
+| ⏱️ **Uptime** | `/proc/uptime` → `Xd Xh Xm` |
+| � **RAM** | `sysinfo` syscall → MB |
+
+> [!TIP]
+> Pure syscalls, zero dependencies, no libc. Just raw x86_64.
 
 ## 🚀 Quick Start
 
 ### Build Instructions
 
-There is a prebuilt binary in the repo if you don't want to build it yourself.
-
-To build `asm-fetch`, you'll need the **NASM Assembler** and standard **GNU Linker**.
-Ensure `nasm` and `ld` (via `binutils`) are installed on your system.
+You'll need **NASM** and **ld** (via `binutils`).
 
 ```bash
-# 1. Assemble the ELF64 object 
-nasm -f elf64 asm-fetch.asm 
+# Build (assemble + link + strip)
+make
 
-# 2. Link it into a native binary executable 
-ld asm-fetch.o -o asm-fetch
+# Clean build artifacts
+make clean
+
+# Install to ~/.local/bin/
+make install
+```
+
+Or manually:
+
+```bash
+nasm -f elf64 asm-fetch.asm -o asm-fetch.o
+ld -s asm-fetch.o -o asm-fetch
 ```
 
 ### Running
-
-Run the resulting executable directly through your shell:
 
 ```bash
 ./asm-fetch
 ```
 
 > [!NOTE]
-> If you want to actually use it like normal, you could also add it to your PATH by copying it to `/usr/local/bin` or `/bin`.
+> You can also run `make install` to copy it to `~/.local/bin/`, or manually add it to your PATH.
