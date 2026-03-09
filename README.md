@@ -9,10 +9,7 @@
 <p align="center">
   <img src="showcase.png" alt="asm-fetch execution" width="100%" onerror="this.style.display='none';"> 
 </p>
-
----
-
-## Project:
+</div>
 
 ```ansi
        /\       asm-fetch:
