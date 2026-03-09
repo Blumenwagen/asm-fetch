@@ -22,6 +22,10 @@
                 RAM:     32012 MB
 ```
 
+> [!NOTE]
+> This is a learning project for me, I have made use of llms in here. If you don't like that, good - don't use it.
+
+
 ## 🚀 Quick Start
 
 ### Build Instructions
